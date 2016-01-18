@@ -5,6 +5,8 @@ Microsoft U-SQL in js (node.js or browser)
 
 ## I think U-SQL in js like...
 
+### in-browser u-sql usage
+
 ```usql
 //script.usqljs
 // 1. Extract
@@ -30,6 +32,35 @@ Microsoft U-SQL in js (node.js or browser)
 OUTPUT @result
 TO "#mytable" // DOM Selector (absolute on document, replace child is default. to append, use APPEND keyword.)
 USING JSON2Table;  //JS DOM Parse Callback
+```
+
+### node.js u-sql usage
+
+```usql
+//script.usqljs
+// 1. Extract
+@tab = EXTRACT webpage, user, duration //JS object members
+       FROM "/path/to/data.csv" // using Ajax
+       USING require('some-csv-parser').fromCSV; //CSV to JSON
+
+// 2. Process
+@tab =
+    SELECT webpage.substring(0, 5) AS tag, // using JS String.prototype.substring() Method
+     webpage.split('/').filter(p => p == "admin").length > 0 AS admin, //using ECMAScript 6 lambda (or you can anonmyous function.)
+     GetFirstPath(webpage) AS first //using JS UDF            
+    FROM @tab;
+
+@result =
+    SELECT tag,
+           COUNT( * ) AS count // same as @tab.length ...
+    FROM @tab
+         WHERE admin == false // JS Expression
+    GROUP BY tag;
+            
+// 3. Output            
+OUTPUT @result
+TO "/path/to/mydata.csv" // save to file
+USING require('some-csv-parser').toCSV;  //JSON to CSV
 ```
 
 ## in browser script like
