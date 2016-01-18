@@ -32,6 +32,35 @@ TO "#mytable" // DOM Selector (absolute on document, replace child is default. t
 USING JSON2Table;  //JS DOM Parse Callback
 ```
 
+## in browser script like
+
+```html
+<script id="getSomething" type="text/usql">
+//... your U-SQL here or code over there.
+</script>
+<script type="text/javascript">
+USQL.id('getSomething').execute(callback);//inline script execute
+USQL(`
+//... your U-SQL String here.
+`).execute(callback); // returns usql object. but not implemented.
+USQL.file('/path/to/ajax.usql'/*, 'callbackname' for JSONP*/); //plain async. "thanable" usql object will be returned.
+var uobj = await USQL.fileAsync('/path/to/ajax.usql'/*, 'callbackname' for JSONP*/); //ECMA7 async
+var result = await uobj.executeAsync(); //async execute
+</script>
+```
+
+## in node.js like
+
+```js
+var usql = require('usql');
+usql(`
+//... your U-SQL String here.
+`).execute(); // returns usql object. but not implemented.
+usql.file('/path/to/my.usql').execute();//plain sync
+var uobj = await usql.fileAsync('/path/to/my.usql'); //async file load
+var result = await uobj.executeAsync(); //async execute
+```
+
 ## or your ideas welcome.
 
 # Target
